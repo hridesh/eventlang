@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<project name="lang" default="parser">
+
+	<!-- ANTLR version -->
+	<property name="antlr.version" value="4.5" />
+
+	<!-- EventLang parser -->
+	<target name="eventlang-check-parser">
+		<condition property="eventlang.parser.uptodate">
+			<and>
+				<uptodate srcfile="src/eventlang/EventLang.g" targetfile="src/eventlang/parser/EventLangParser.java" />
+				<uptodate srcfile="src/eventlang/EventLang.g" targetfile="src/eventlang/parser/EventLangLexer.java" />
+				<uptodate srcfile="src/eventlang/EventLang.g" targetfile="src/eventlang/parser/EventLangListener.java" />
+			</and>
+		</condition>
+	</target>
+
+	<target name="eventlang" depends="eventlang-check-parser" unless="eventlang.parser.uptodate">
+		<java jar="lib/antlr-${antlr.version}-complete.jar" dir="src/eventlang/" fork="true" failonerror="true">
+			<arg value="-o" />
+			<arg value="parser/" />
+			<arg value="-no-listener" />
+			<arg value="-package" />
+			<arg value="eventlang.parser; import static eventlang.AST.*" />
+			<arg value="EventLang.g" />
+		</java>
+	</target>
+
+	<target name="parser" depends="eventlang" >
+	</target>
+	
+</project>
