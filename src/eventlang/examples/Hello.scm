@@ -1,5 +1,3 @@
-(define seq (lambda (cmd1 cmd2) cmd2))
-
 (define hello 
 	(event (message))
 )
