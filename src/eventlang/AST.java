@@ -921,6 +921,12 @@ public interface AST {
 		}
 	}
 
+	/**
+	 * A when expression has the syntax 
+	 * 
+	 *  (when ev do expression)
+	 *  
+	 */
 	public static class WhenExp extends Exp {		
 		Exp _event;
 		Exp _body;
@@ -938,7 +944,28 @@ public interface AST {
 		}
 	}
 
-    public static class ErrorExp extends Exp {
+	/**
+	 * A print expression has the syntax 
+	 * 
+	 *  (print expression)
+	 *  
+	 */
+	public static class PrintExp extends Exp {
+		private Exp _value_exp;
+
+		public PrintExp(Exp value_exp) {
+			_value_exp = value_exp;
+		}
+
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
+			return visitor.visit(this, env);
+		}
+
+		public Exp value_exp() { return _value_exp; }
+
+	}
+
+	public static class ErrorExp extends Exp {
 		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
@@ -991,5 +1018,6 @@ public interface AST {
 		public T visit(AST.EventExp e, Env<U> env) throws ProgramError; 
 		public T visit(AST.AnnounceExp e, Env<U> env) throws ProgramError; 
 		public T visit(AST.WhenExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.PrintExp e, Env<U> env) throws ProgramError; 
 	}	
 }
