@@ -322,5 +322,12 @@ public class Printer {
 			return result + ")";
 		}
 
+		@Override
+		public String visit(PrintExp e, Env<Void> env) throws ProgramError {
+            String result = "(print ";
+            result += e.value_exp().accept(this, env);
+            return result + ")";
+		}
+
 	}
 }
