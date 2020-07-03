@@ -275,28 +275,6 @@ public class Printer {
             result += e.value_exp().accept(this, env);
             return result + ")";
         }
-
-		@Override
-		public String visit(ForkExp e, Env<Void> env) throws ProgramError {
-            String result = "(fork ";
-            result += e.fst_exp().accept(this, env) + " ";
-            result += e.snd_exp().accept(this, env);
-            return result + ")";
-		}
-
-		@Override
-		public String visit(LockExp e, Env<Void> env) throws ProgramError {
-            String result = "(lock ";
-            result += e.value_exp().accept(this, env);
-            return result + ")";
-		}
-
-		@Override
-		public String visit(UnlockExp e, Env<Void> env) throws ProgramError {
-            String result = "(unlock ";
-            result += e.value_exp().accept(this, env);
-            return result + ")";
-		}
 		
 		@Override
 		public String visit(EventExp e, Env<Void> env) throws ProgramError {

@@ -40,9 +40,6 @@ exp returns [Exp ast]:
         | deref=derefexp { $ast = $deref.ast; }
         | assign=assignexp { $ast = $assign.ast; }
         | free=freeexp { $ast = $free.ast; }
-        | fork=forkexp { $ast = $fork.ast; }
-        | lock=lockexp { $ast = $lock.ast; }
-        | ulock=unlockexp { $ast = $ulock.ast; }
  // Begin: New Expressions for EventLang       
         | ev=eventexp { $ast = $ev.ast; }
         | an=announceexp { $ast = $an.ast; }
@@ -87,28 +84,6 @@ whenexp returns [WhenExp ast] :
  			( e=exp { $arguments.add($e.ast); } )* 
  		')' { $ast = new SeqExp($arguments); }
  		;
-
-
-  // Begin: New Expressions for ForkLang
- forkexp returns [ForkExp ast] :
-        '(' Fork
-            e1=exp
-            e2=exp
-        ')' { $ast = new ForkExp($e1.ast, $e2.ast); }
-         ;
-
- lockexp returns [LockExp ast] :
-        '(' Lock
-            e1=exp
-        ')' { $ast = new LockExp($e1.ast); }
-         ;
-
- unlockexp returns [UnlockExp ast] :
-        '(' UnLock
-            e1=exp
-        ')' { $ast = new UnlockExp($e1.ast); }
-         ;
-// End: New Expressions for ForkLang
 
   refexp returns [RefExp ast] :
         '(' Ref

@@ -818,72 +818,15 @@ public interface AST {
 
     }
 
-    /**
-     * A fork expression has the syntax 
-     * 
-     *  (fork expression+)
-     *  
-     */
-    public static class ForkExp extends Exp {
-        private Exp _fst_exp;
-        private Exp _snd_exp;
-
-        public ForkExp(Exp lhs_exp, Exp rhs_exp) {
-                _fst_exp = lhs_exp;
-                _snd_exp = rhs_exp;
-        }
-
-        public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
-                return visitor.visit(this, env);
-        }
-
-        public Exp fst_exp() { return _fst_exp; }
-        public Exp snd_exp() { return _snd_exp; }
-
-    }
 
     /**
-     * A lock expression has the syntax 
+     * An announce expression has the syntax 
      * 
-     *  (lock expression)
+     *  (announce ev expression+)
      *  
+     * @author hridesh
+     *
      */
-    public static class LockExp extends Exp {
-        private Exp _value_exp;
-
-        public LockExp(Exp value_exp) {
-                _value_exp = value_exp;
-        }
-
-        public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
-                return visitor.visit(this, env);
-        }
-
-        public Exp value_exp() { return _value_exp; }
-
-    }
-
-    /**
-     * An unlock expression has the syntax 
-     * 
-     *  (unlock expression)
-     *  
-     */
-    public static class UnlockExp extends Exp {
-        private Exp _value_exp;
-
-        public UnlockExp(Exp value_exp) {
-                _value_exp = value_exp;
-        }
-
-        public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
-                return visitor.visit(this, env);
-        }
-
-        public Exp value_exp() { return _value_exp; }
-
-    }
-
 	public static class AnnounceExp extends Exp {
 		Exp _event; 
 		List<Exp> _actuals;
@@ -1035,9 +978,6 @@ public interface AST {
 		public T visit(AST.DerefExp e, Env<U> env) throws ProgramError; 
 		public T visit(AST.AssignExp e, Env<U> env) throws ProgramError; 
 		public T visit(AST.FreeExp e, Env<U> env) throws ProgramError;
-		public T visit(AST.ForkExp e, Env<U> env) throws ProgramError; 
-		public T visit(AST.LockExp e, Env<U> env) throws ProgramError; 
-		public T visit(AST.UnlockExp e, Env<U> env) throws ProgramError; 
 		public T visit(AST.EventExp e, Env<U> env) throws ProgramError; 
 		public T visit(AST.AnnounceExp e, Env<U> env) throws ProgramError; 
 		public T visit(AST.WhenExp e, Env<U> env) throws ProgramError; 

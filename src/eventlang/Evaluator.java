@@ -427,48 +427,6 @@ public class Evaluator implements Visitor<Value, Value> {
 		}
 	}
 	
-
-	@Override
-	public Value visit(ForkExp e, Env<Value> env) throws ProgramError {
-        Exp fst = e.fst_exp();
-        Exp snd = e.snd_exp();
-        EvalThread fst_thread = new EvalThread(env, fst, this);
-        EvalThread snd_thread = new EvalThread(env, snd, this);
-        fst_thread.start();
-        snd_thread.start();
-      
-        Value fst_val = fst_thread.value();
-        Value snd_val = snd_thread.value();
-		return new Value.PairVal(fst_val, snd_val);	
-	}
-
-	@Override
-	public Value visit(LockExp e, Env<Value> env) throws ProgramError {
-        Exp value_exp = e.value_exp();
-        Object result = value_exp.accept(this, env);
-		if(!(result instanceof Value.RefVal))
-			return new Value.DynamicError("Non-reference values cannot be locked in expression " +  ts.visit(e, null));
-        Value.RefVal loc = (Value.RefVal) result;
-        loc.lock();
-        return loc;
-	}
-
-	
-	@Override
-	public Value visit(UnlockExp e, Env<Value> env) throws ProgramError {
-        Exp value_exp = e.value_exp();
-        Object result = value_exp.accept(this, env);
-		if(!(result instanceof Value.RefVal))
-			return new Value.DynamicError("Non-reference values cannot be unlocked  in expression " +  ts.visit(e, null));
-        Value.RefVal loc = (Value.RefVal) result;
-        try{
-        	loc.unlock();
-        } catch(IllegalMonitorStateException ex){
-        	return new Value.DynamicError("Lock held by another thread " +  ts.visit(e, null));
-        }
-		return loc;
-	}
-
 	@Override
 	public Value visit(EventExp e, Env<Value> env) throws ProgramError {
 		return new Value.EventVal(e.contexts());
