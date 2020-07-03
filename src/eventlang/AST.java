@@ -964,6 +964,29 @@ public interface AST {
 		public Exp value_exp() { return _value_exp; }
 
 	}
+	
+	/**
+	 * A seq expression has the syntax
+	 * 
+	 * (seq exp0 exp1 exp2 ..)
+	 * 
+	 * @author hridesh
+	 *
+	 */
+	public static class SeqExp extends Exp {
+		List<Exp> _expressions;
+		
+		public SeqExp(List<Exp> expressions) {
+			_expressions = expressions; 
+		}
+		
+		public List<Exp> expressions() { return _expressions; }
+		
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
+			return visitor.visit(this, env);
+		}
+	}
+
 
 	public static class ErrorExp extends Exp {
 		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
@@ -1019,5 +1042,6 @@ public interface AST {
 		public T visit(AST.AnnounceExp e, Env<U> env) throws ProgramError; 
 		public T visit(AST.WhenExp e, Env<U> env) throws ProgramError; 
 		public T visit(AST.PrintExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.SeqExp e, Env<U> env) throws ProgramError; 
 	}	
 }
