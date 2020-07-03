@@ -328,6 +328,13 @@ public class Printer {
             result += e.value_exp().accept(this, env);
             return result + ")";
 		}
-
+		
+		public String visit(AST.SeqExp e, Env<Void> env) throws ProgramError {
+			String result = "(seq ";
+			for(AST.Exp exp : e.expressions())
+				result += exp.accept(this, env) + " ";
+			return result + ")";
+		}
+		
 	}
 }
