@@ -520,5 +520,17 @@ public class Evaluator implements Visitor<Value, Value> {
 		new Printer().print((Value)result);
 		return new Value.UnitVal();
 	}
+	
+	@Override
+	public Value visit(SeqExp e, Env<Value> env) throws ProgramError {
+		List<Exp> expressions = e.expressions();
+
+		Value result = new Value.UnitVal();
+		
+		for(Exp exp : expressions) 
+			result = (Value) exp.accept(this, env);
+				
+		return result;
+	}
 
 }
