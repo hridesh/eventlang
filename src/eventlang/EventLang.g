@@ -62,7 +62,7 @@ announceexp returns [AnnounceExp ast]
         locals [ArrayList<Exp> arguments = new ArrayList<Exp>()] :
         '(' Announce
 			ev=exp
-            '(' ( e=exp { $arguments.add($e.ast); } )* ')'
+            ( e=exp { $arguments.add($e.ast); } )*
         ')' { $ast = new AnnounceExp($ev.ast,$arguments); }
         ;
 
