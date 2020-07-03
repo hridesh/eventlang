@@ -4,6 +4,7 @@ import java.io.IOException;
 import eventlang.Env;
 import eventlang.Value;
 import eventlang.AST.Program;
+import eventlang.AST.ProgramError;
 
 /**
  * This main class implements the Read-Eval-Print-Loop of the interpreter with
@@ -36,7 +37,9 @@ public class Interpreter {
 			} catch (IOException e) {
 				System.out.println("Error reading input:" + e.getMessage());
 			} catch (NullPointerException e) {
-				System.out.println("Error:" + e.getMessage());
+				System.out.println("Error: " + e.getMessage());
+			} catch (ProgramError e) {
+				System.out.println("Error: " + e.getMessage());
 			}
 		}
 	}
