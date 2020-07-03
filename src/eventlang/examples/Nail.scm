@@ -1,6 +1,3 @@
-(define seq7 (lambda (cmd1 cmd2 cmd3 cmd4 cmd5 cmd6 cmd7 cmd8) cmd8))
-(define seq (lambda (cmd1 cmd2) cmd2))
-
 (define nail (event (nailed)))
 (define shoe (event (attached)))
 (define horse (event (canrun)))
@@ -9,7 +6,7 @@
 (define battle (event (won)))
 (define kingdom (event (saved)))
 
-(seq7
+(seq
 	(when nail do 
 		(if nailed 
 			(seq (print "Nail is nailed") 
