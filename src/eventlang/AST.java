@@ -10,10 +10,9 @@ import java.util.List;
  * @author hridesh
  * 
  */
-@SuppressWarnings("rawtypes")
 public interface AST {
 	public static abstract class ASTNode implements AST {
-		public abstract Object accept(Visitor visitor, Env env);
+		public abstract <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError;
 	}
 	public static class Program extends ASTNode {
 		List<DefineDecl> _decls;
@@ -32,10 +31,18 @@ public interface AST {
 			return _decls;
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
+	
+	@SuppressWarnings("serial")
+	public static class ProgramError extends Exception {
+		public ProgramError(String message) {
+			super(message);
+		}
+	}
+
 	public static abstract class Exp extends ASTNode {
 
 	}
@@ -51,7 +58,7 @@ public interface AST {
 			return _name;
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -60,7 +67,7 @@ public interface AST {
 		
 		public UnitExp() {}
 
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 
@@ -77,7 +84,7 @@ public interface AST {
 			return _val;
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -93,7 +100,7 @@ public interface AST {
 			return _val;
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -109,7 +116,7 @@ public interface AST {
 			return _val;
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -179,7 +186,7 @@ public interface AST {
 			super(left, right);
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -202,7 +209,7 @@ public interface AST {
 			super(left, right);
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -224,7 +231,7 @@ public interface AST {
 			super(left, right);
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -246,7 +253,7 @@ public interface AST {
 			super(left, right);
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -270,7 +277,7 @@ public interface AST {
 			_body = body;
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 		
@@ -299,7 +306,7 @@ public interface AST {
 			_value_exp = value_exp;
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 		
@@ -328,7 +335,7 @@ public interface AST {
 		
 		public Exp body() { return _body; }
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -352,7 +359,7 @@ public interface AST {
 
 		public List<Exp> operands() { return _operands; }
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -380,7 +387,7 @@ public interface AST {
 		public Exp then_exp() { return _then_exp; }
 		public Exp else_exp() { return _else_exp; }
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -398,7 +405,7 @@ public interface AST {
 			super(first_exp, second_exp);
 		}
 				
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -427,7 +434,7 @@ public interface AST {
 			super(first_exp, second_exp);
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -445,7 +452,7 @@ public interface AST {
 			super(first_exp, second_exp);
 		}
 				
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -464,7 +471,7 @@ public interface AST {
 			_arg = arg;
 		}
 		public Exp arg() { return _arg; }
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -483,7 +490,7 @@ public interface AST {
 			_arg = arg;
 		}
 		public Exp arg() { return _arg; }
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -505,7 +512,7 @@ public interface AST {
 		}
 		public Exp fst() { return _fst; }
 		public Exp snd() { return _snd; }
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -524,7 +531,7 @@ public interface AST {
 			_elems = elems;
 		}
 		public List<Exp> elems() { return _elems; }
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -543,7 +550,7 @@ public interface AST {
 			_arg = arg;
 		}
 		public Exp arg() { return _arg; }
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -556,7 +563,7 @@ public interface AST {
     	Exp exp(){
     		return this.e;
     	}
-    	public Object accept(Visitor visitor, Env env) {
+    	public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
     		return visitor.visit(this, env);
     	}
     }
@@ -569,7 +576,7 @@ public interface AST {
     	Exp exp(){
     		return this.e;
     	}
-    	public Object accept(Visitor visitor, Env env) {
+    	public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
     		return visitor.visit(this, env);
     	}
     }
@@ -582,7 +589,7 @@ public interface AST {
     	Exp exp(){
     		return this.e;
     	}
-    	public Object accept(Visitor visitor, Env env) {
+    	public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
     		return visitor.visit(this, env);
     	}
     }
@@ -595,7 +602,7 @@ public interface AST {
     	Exp exp(){
     		return this.e;
     	}
-    	public Object accept(Visitor visitor, Env env) {
+    	public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
     		return visitor.visit(this, env);
     	}
     }
@@ -608,7 +615,7 @@ public interface AST {
     	Exp exp(){
     		return this.e;
     	}
-    	public Object accept(Visitor visitor, Env env) {
+    	public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
     		return visitor.visit(this, env);
     	}
     }
@@ -621,7 +628,7 @@ public interface AST {
     	Exp exp(){
     		return this.e;
     	}
-    	public Object accept(Visitor visitor, Env env) {
+    	public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
     		return visitor.visit(this, env);
     	}
     }
@@ -634,7 +641,7 @@ public interface AST {
     	Exp exp(){
     		return this.e;
     	}
-    	public Object accept(Visitor visitor, Env env) {
+    	public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
     		return visitor.visit(this, env);
     	}
     }
@@ -648,7 +655,7 @@ public interface AST {
     	Exp exp(){
     		return this.e;
     	}
-    	public Object accept(Visitor visitor, Env env) {
+    	public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
     		return visitor.visit(this, env);
     	}
     }
@@ -664,7 +671,7 @@ public interface AST {
 			_code = code;
 		}
 		public Exp code() { return _code; }
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -680,7 +687,7 @@ public interface AST {
 			_file = file;
 		}
 		public Exp file() { return _file; }
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -704,7 +711,7 @@ public interface AST {
 			_body = body;
 		}
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 		
@@ -731,7 +738,7 @@ public interface AST {
                     _value_exp = value_exp;
             }
 
-            public Object accept(Visitor visitor, Env env) {
+            public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
                     return visitor.visit(this, env);
             }
 
@@ -754,7 +761,7 @@ public interface AST {
                     _loc_exp = loc_exp;
             }
 
-            public Object accept(Visitor visitor, Env env) {
+            public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
                     return visitor.visit(this, env);
             }
 
@@ -779,7 +786,7 @@ public interface AST {
                     _rhs_exp = rhs_exp;
             }
 
-            public Object accept(Visitor visitor, Env env) {
+            public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
                     return visitor.visit(this, env);
             }
 
@@ -803,7 +810,7 @@ public interface AST {
                     _value_exp = value_exp;
             }
 
-            public Object accept(Visitor visitor, Env env) {
+            public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
                     return visitor.visit(this, env);
             }
 
@@ -826,7 +833,7 @@ public interface AST {
                 _snd_exp = rhs_exp;
         }
 
-        public Object accept(Visitor visitor, Env env) {
+        public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
                 return visitor.visit(this, env);
         }
 
@@ -848,7 +855,7 @@ public interface AST {
                 _value_exp = value_exp;
         }
 
-        public Object accept(Visitor visitor, Env env) {
+        public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
                 return visitor.visit(this, env);
         }
 
@@ -869,7 +876,7 @@ public interface AST {
                 _value_exp = value_exp;
         }
 
-        public Object accept(Visitor visitor, Env env) {
+        public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
                 return visitor.visit(this, env);
         }
 
@@ -890,7 +897,7 @@ public interface AST {
 
 		public List<Exp> actuals() { return _actuals; }
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -909,7 +916,7 @@ public interface AST {
 		//public String name() { return _name; }
 		public List<String> contexts() { return _contexts; }
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
@@ -926,63 +933,63 @@ public interface AST {
 		public Exp event() { return _event; }
 		public Exp body() { return _body; }
 		
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
 
     public static class ErrorExp extends Exp {
-		public Object accept(Visitor visitor, Env env) {
+		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 	}
 	
-	public interface Visitor <T> {
+	public interface Visitor <T, U> {
 		// This interface should contain a signature for each concrete AST node.
-		public T visit(AST.AddExp e, Env env);
-		public T visit(AST.UnitExp e, Env env);
-		public T visit(AST.NumExp e, Env env);
-		public T visit(AST.StrExp e, Env env);
-		public T visit(AST.BoolExp e, Env env);
-		public T visit(AST.DivExp e, Env env);
-		public T visit(AST.ErrorExp e, Env env);
-		public T visit(AST.MultExp e, Env env);
-		public T visit(AST.Program p, Env env);
-		public T visit(AST.SubExp e, Env env);
-		public T visit(AST.VarExp e, Env env);
-		public T visit(AST.LetExp e, Env env); 
-		public T visit(AST.DefineDecl d, Env env); 
-		public T visit(AST.ReadExp e, Env env); 
-		public T visit(AST.EvalExp e, Env env); 
-		public T visit(AST.LambdaExp e, Env env); 
-		public T visit(AST.CallExp e, Env env); 
-		public T visit(AST.LetrecExp e, Env env); 
-		public T visit(AST.IfExp e, Env env); 
-		public T visit(AST.LessExp e, Env env); 
-		public T visit(AST.EqualExp e, Env env); 
-		public T visit(AST.GreaterExp e, Env env); 
-		public T visit(AST.CarExp e, Env env); 
-		public T visit(AST.CdrExp e, Env env); 
-		public T visit(AST.ConsExp e, Env env); 
-		public T visit(AST.ListExp e, Env env); 
-		public T visit(AST.NullExp e, Env env); 
-        public T visit(AST.IsNullExp e, Env env); 
-        public T visit(AST.IsProcedureExp e, Env env); 
-        public T visit(AST.IsListExp e, Env env); 
-        public T visit(AST.IsPairExp e, Env env); 
-        public T visit(AST.IsUnitExp e, Env env); 
-        public T visit(AST.IsNumberExp e, Env env); 
-        public T visit(AST.IsStringExp e, Env env); 
-        public T visit(AST.IsBooleanExp e, Env env); 
-		public T visit(AST.RefExp e, Env env); 
-		public T visit(AST.DerefExp e, Env env); 
-		public T visit(AST.AssignExp e, Env env); 
-		public T visit(AST.FreeExp e, Env env);
-		public T visit(AST.ForkExp e, Env env); 
-		public T visit(AST.LockExp e, Env env); 
-		public T visit(AST.UnlockExp e, Env env); 
-		public T visit(AST.EventExp e, Env env); 
-		public T visit(AST.AnnounceExp e, Env env); 
-		public T visit(AST.WhenExp e, Env env); 
+		public T visit(AST.AddExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.UnitExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.NumExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.StrExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.BoolExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.DivExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.ErrorExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.MultExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.Program p, Env<U> env) throws ProgramError;
+		public T visit(AST.SubExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.VarExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.LetExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.DefineDecl d, Env<U> env) throws ProgramError; 
+		public T visit(AST.ReadExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.EvalExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.LambdaExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.CallExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.LetrecExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.IfExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.LessExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.EqualExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.GreaterExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.CarExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.CdrExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.ConsExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.ListExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.NullExp e, Env<U> env) throws ProgramError; 
+        public T visit(AST.IsNullExp e, Env<U> env) throws ProgramError; 
+        public T visit(AST.IsProcedureExp e, Env<U> env) throws ProgramError; 
+        public T visit(AST.IsListExp e, Env<U> env) throws ProgramError; 
+        public T visit(AST.IsPairExp e, Env<U> env) throws ProgramError; 
+        public T visit(AST.IsUnitExp e, Env<U> env) throws ProgramError; 
+        public T visit(AST.IsNumberExp e, Env<U> env) throws ProgramError; 
+        public T visit(AST.IsStringExp e, Env<U> env) throws ProgramError; 
+        public T visit(AST.IsBooleanExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.RefExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.DerefExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.AssignExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.FreeExp e, Env<U> env) throws ProgramError;
+		public T visit(AST.ForkExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.LockExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.UnlockExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.EventExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.AnnounceExp e, Env<U> env) throws ProgramError; 
+		public T visit(AST.WhenExp e, Env<U> env) throws ProgramError; 
 	}	
 }
