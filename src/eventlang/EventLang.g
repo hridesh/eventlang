@@ -49,6 +49,7 @@ exp returns [Exp ast]:
         | wh=whenexp { $ast = $wh.ast; }
  // End: New Expressions for EventLang       
         | print=printexp { $ast = $print.ast; }
+        | seq=seqexp { $ast = $seq.ast; }
         ;
   
  // Begin: New Expressions for EventLang       
@@ -79,6 +80,14 @@ whenexp returns [WhenExp ast] :
             e1=exp
         ')' { $ast = new PrintExp($e1.ast); }
          ;
+
+ seqexp returns [SeqExp ast] 
+        locals [ArrayList<Exp> arguments = new ArrayList<Exp>();  ] :
+ 		'(' Seq 
+ 			( e=exp { $arguments.add($e.ast); } )* 
+ 		')' { $ast = new SeqExp($arguments); }
+ 		;
+
 
   // Begin: New Expressions for ForkLang
  forkexp returns [ForkExp ast] :
@@ -360,6 +369,7 @@ whenexp returns [WhenExp ast] :
  Lock : 'lock' ;
  UnLock : 'unlock' ;
  Print : 'print' ;
+ Seq : 'seq' ;
  
  Event : 'event' ;
  Announce : 'announce' ;
