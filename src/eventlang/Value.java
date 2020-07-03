@@ -38,16 +38,16 @@ public interface Value {
         }
         public int loc() { return _loc; }
     }
-	static class FunVal implements Value { //New in the funclang
-		private Env _env;
+	static class FunVal implements Value { 
+		private Env<Value> _env;
 		private List<String> _formals;
 		private Exp _body;
-		public FunVal(Env env, List<String> formals, Exp body) {
+		public FunVal(Env<Value> env, List<String> formals, Exp body) {
 			_env = env;
 			_formals = formals;
 			_body = body;
 		}
-		public Env env() { return _env; }
+		public Env<Value> env() { return _env; }
 		public List<String> formals() { return _formals; }
 		public Exp body() { return _body; }
 	    public String tostring() { 
@@ -55,7 +55,11 @@ public interface Value {
 			for(String formal : _formals) 
 				result += formal + " ";
 			result += ") ";
-			result += _body.accept(new Printer.Formatter(), _env);
+			try {
+				result += _body.accept(new Printer.Formatter(), null);
+			} catch (ProgramError e) {
+				e.printStackTrace();
+			}
 			return result + ")";
 	    }
 	}
