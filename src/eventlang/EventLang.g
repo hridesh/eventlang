@@ -48,6 +48,7 @@ exp returns [Exp ast]:
         | an=announceexp { $ast = $an.ast; }
         | wh=whenexp { $ast = $wh.ast; }
  // End: New Expressions for EventLang       
+        | print=printexp { $ast = $print.ast; }
         ;
   
  // Begin: New Expressions for EventLang       
@@ -72,6 +73,12 @@ whenexp returns [WhenExp ast] :
 		')' { $ast = new WhenExp($e1.ast, $e2.ast); }
 		;	
  // End: New Expressions for EventLang       
+
+ printexp returns [PrintExp ast] :
+        '(' Print
+            e1=exp
+        ')' { $ast = new PrintExp($e1.ast); }
+         ;
 
   // Begin: New Expressions for ForkLang
  forkexp returns [ForkExp ast] :
