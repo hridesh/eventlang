@@ -359,6 +359,7 @@ whenexp returns [WhenExp ast] :
  Fork : 'fork' ;
  Lock : 'lock' ;
  UnLock : 'unlock' ;
+ Print : 'print' ;
  
  Event : 'event' ;
  Announce : 'announce' ;
