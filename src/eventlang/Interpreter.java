@@ -18,7 +18,7 @@ public class Interpreter {
 		System.out.println("EventLang: Type a program to evaluate and press the enter key,\n" + 
 				"e.g. (define ev (event (a b)))  which creates an event\n" + 
                 "     (when ev do (+ a b)) which creates an observer expression\n" + 
-                "     (announce ev ( 2 3)) which fires event ev \n" + 
+                "     (announce ev 2 3) which fires event ev \n" + 
 				"then try (when ev do (* a b)) which creates another observer \n" +
 				"then try (announce ev (2 3)) which fires event ev again (note the change).\n" +
 				"Press Ctrl + C to exit.");
