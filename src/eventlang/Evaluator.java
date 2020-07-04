@@ -470,8 +470,10 @@ public class Evaluator implements Visitor<Value, Value> {
 
 	@Override
 	public Value visit(PrintExp e, Env<Value> env) throws ProgramError {
-		Exp value_exp = e.value_exp();
-		Object result = value_exp.accept(this, env);
+		List<Exp> expressions = e.expressions();
+		Value.StringVal result = new StringVal("");
+		for(Exp exp : expressions) 
+			result = new StringVal(result.v() + (Value) exp.accept(this, env));
 		new Printer().print((Value)result);
 		return new Value.UnitVal();
 	}
