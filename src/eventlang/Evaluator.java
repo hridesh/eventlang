@@ -473,7 +473,7 @@ public class Evaluator implements Visitor<Value, Value> {
 		List<Exp> expressions = e.expressions();
 		Value.StringVal result = new StringVal("");
 		for(Exp exp : expressions) 
-			result = new StringVal(result.v() + (Value) exp.accept(this, env));
+			result = new StringVal(result.v() + ((Value) exp.accept(this, env)).tostring());
 		new Printer().print((Value)result);
 		return new Value.UnitVal();
 	}
