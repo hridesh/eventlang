@@ -75,7 +75,7 @@ public class Evaluator implements Visitor<Value, Value> {
 
 	@Override
 	public Value visit(ErrorExp e, Env<Value> env) throws ProgramError {
-		return new Value.DynamicError("Encountered an error expression");
+		throw new ProgramError("Encountered an error expression");
 	}
 
 	@Override
@@ -122,10 +122,7 @@ public class Evaluator implements Visitor<Value, Value> {
 		
 		for(Exp exp : value_exps){
 			Value value = (Value)exp.accept(this, env);
-			if(! (value instanceof DynamicError))
-				values.add(value);
-			else 
-				return value;
+			values.add(value);
 		}
 		
 		Env<Value> new_env = env;
@@ -153,7 +150,7 @@ public class Evaluator implements Visitor<Value, Value> {
 	public Value visit(CallExp e, Env<Value> env) throws ProgramError {
 		Object result = e.operator().accept(this, env);
 		if(!(result instanceof Value.FunVal))
-			return new Value.DynamicError("Operator not a function in call " +  ts.visit(e, null));
+			throw new ProgramError("Operator not a function in call " +  ts.visit(e, null));
 		Value.FunVal operator =  (Value.FunVal) result; 
 		List<Exp> operands = e.operands();
 
@@ -173,7 +170,7 @@ public class Evaluator implements Visitor<Value, Value> {
 			return (Value) operator.body().accept(this, fun_env);
 		}
 		else if (formals.size()!=actuals.size())
-			return new Value.DynamicError("Argument mismatch in call " + ts.visit(e, null));
+			throw new ProgramError("Argument mismatch in call " + ts.visit(e, null));
 
 		for (int index = 0; index < formals.size(); index++)
 			fun_env = new ExtendEnv<>(fun_env, formals.get(index), actuals.get(index));
@@ -185,7 +182,7 @@ public class Evaluator implements Visitor<Value, Value> {
 	public Value visit(IfExp e, Env<Value> env) throws ProgramError { // New for funclang.
 		Object result = e.conditional().accept(this, env);
 		if(!(result instanceof Value.BoolVal))
-			return new Value.DynamicError("Condition not a boolean in expression " +  ts.visit(e, null));
+			throw new ProgramError("Condition not a boolean in expression " +  ts.visit(e, null));
 		Value.BoolVal condition =  (Value.BoolVal) result; //Dynamic checking
 		
 		if(condition.v())
@@ -319,7 +316,7 @@ public class Evaluator implements Visitor<Value, Value> {
 			String text = Reader.readFile("" + System.getProperty("user.dir") + File.separator + fileName.v());
 			return new StringVal(text);
 		} catch (IOException exception) {
-			return new Value.DynamicError(exception.getMessage());
+			throw new ProgramError(exception.getMessage());
 		}
 	}
 	
@@ -417,11 +414,11 @@ public class Evaluator implements Visitor<Value, Value> {
 			}
 		}
 		
-		public Value value(){
+		public Value value() throws ProgramError {
 			try {
 				this.join();
 			} catch (InterruptedException e) {
-				return new Value.DynamicError(e.getMessage());
+				throw new ProgramError(e.getMessage());
 			}
 			return value;
 		}
@@ -437,10 +434,10 @@ public class Evaluator implements Visitor<Value, Value> {
         Exp event_exp = e.event();
         Object result = event_exp.accept(this, env);
 		if(!(result instanceof Value.EventVal))
-			return new Value.DynamicError("Non-event value cannot be announced in expression " +  ts.visit(e, null));
+			throw new ProgramError("Non-event value cannot be announced in expression " +  ts.visit(e, null));
         Value.EventVal event = (Value.EventVal) result;
 		if(!(e.actuals().size()== event.contexts().size()))
-			return new Value.DynamicError("Number of context varaibles do not match in announce expression " +  ts.visit(e, null));
+			throw new ProgramError("Number of context varaibles do not match in announce expression " +  ts.visit(e, null));
 		
 		List<String> contexts = event.contexts();		
 		List<Value> actuals = new ArrayList<Value>(contexts.size());
@@ -464,7 +461,7 @@ public class Evaluator implements Visitor<Value, Value> {
         Exp event_exp = e.event();
         Object result = event_exp.accept(this, env);
 		if(!(result instanceof Value.EventVal))
-			return new Value.DynamicError("Non-event value cannot be used in when expression " +  ts.visit(e, null));
+			throw new ProgramError("Non-event value cannot be used in when expression " +  ts.visit(e, null));
 		EventVal event = (EventVal) result;
 		Exp observer = e.body();
 		event.register(observer);
