@@ -890,21 +890,21 @@ public interface AST {
 	/**
 	 * A print expression has the syntax 
 	 * 
-	 *  (print expression)
+	 *  (print expression*)
 	 *  
 	 */
 	public static class PrintExp extends Exp {
-		private Exp _value_exp;
+		private List<Exp> _expressions;
 
-		public PrintExp(Exp value_exp) {
-			_value_exp = value_exp;
+		public PrintExp(List<Exp> expressions) {
+			_expressions = expressions; 
 		}
 
 		public <T,U> T accept(Visitor<T,U> visitor, Env<U> env) throws ProgramError {
 			return visitor.visit(this, env);
 		}
 
-		public Exp value_exp() { return _value_exp; }
+		public List<Exp> expressions() { return _expressions; }
 
 	}
 	
@@ -917,7 +917,7 @@ public interface AST {
 	 *
 	 */
 	public static class SeqExp extends Exp {
-		List<Exp> _expressions;
+		private List<Exp> _expressions;
 		
 		public SeqExp(List<Exp> expressions) {
 			_expressions = expressions; 
