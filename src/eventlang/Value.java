@@ -10,15 +10,15 @@ public interface Value {
 	public String tostring();
 	static class EventVal implements Value {
 		private List<String> _contexts;
-		private List<Exp> _observers;
+		private List<Exp> _handlers;
 		public EventVal(List<String> contexts) {
 			_contexts = contexts;
-			_observers = new ArrayList<Exp>();
+			_handlers = new ArrayList<Exp>();
 		}
 		public List<String> contexts() { return _contexts; }
-		public List<Exp> observers() { return _observers; }
-		public void register(Exp observer){
-			_observers.add(observer);
+		public List<Exp> handlers() { return _handlers; }
+		public void register(Exp handler){
+			_handlers.add(handler);
 		}
 		
 	    public String tostring() { 

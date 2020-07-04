@@ -439,7 +439,7 @@ public class Evaluator implements Visitor<Value, Value> {
 		if(!(e.actuals().size()== event.contexts().size()))
 			throw new ProgramError("Number of context varaibles do not match in announce expression " +  ts.visit(e, null));
 		
-		List<String> contexts = event.contexts();		
+		List<String> contexts = event.contexts();	
 		List<Value> actuals = new ArrayList<Value>(contexts.size());
 		
 		for(Exp exp : e.actuals()) 
@@ -450,7 +450,7 @@ public class Evaluator implements Visitor<Value, Value> {
 			ann_env = new ExtendEnv<>(ann_env, contexts.get(index), actuals.get(index));
 
 		Value lastVal = new UnitVal();
-		for(Exp exp:event.observers()){
+		for(Exp exp:event.handlers()){
 			lastVal = (Value)exp.accept(this, ann_env);
         }
 		return lastVal;
@@ -463,8 +463,8 @@ public class Evaluator implements Visitor<Value, Value> {
 		if(!(result instanceof Value.EventVal))
 			throw new ProgramError("Non-event value cannot be used in when expression " +  ts.visit(e, null));
 		EventVal event = (EventVal) result;
-		Exp observer = e.body();
-		event.register(observer);
+		Exp handler = e.body();
+		event.register(handler);
 		return new UnitVal();
 	}
 
