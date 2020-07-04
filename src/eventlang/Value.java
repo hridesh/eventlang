@@ -11,14 +11,18 @@ public interface Value {
 	static class EventVal implements Value {
 		private List<String> _contexts;
 		private List<Exp> _handlers;
+		private List<Env<Value>> _handler_envs;
 		public EventVal(List<String> contexts) {
 			_contexts = contexts;
 			_handlers = new ArrayList<Exp>();
+			_handler_envs = new ArrayList<Env<Value>>();
 		}
 		public List<String> contexts() { return _contexts; }
 		public List<Exp> handlers() { return _handlers; }
-		public void register(Exp handler){
+		public List<Env<Value>> handler_envs() { return _handler_envs; }
+		public void register(Exp handler, Env<Value> handler_env){
 			_handlers.add(handler);
+			_handler_envs.add(handler_env);
 		}
 
 		public String tostring() { 

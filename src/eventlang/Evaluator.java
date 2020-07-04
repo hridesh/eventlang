@@ -18,18 +18,18 @@ import java.io.File;
 import java.io.IOException;
 
 public class Evaluator implements Visitor<Value, Value> {
-	
+
 	Printer.Formatter ts = new Printer.Formatter();
 
 	private volatile Env<Value> initEnv = initialEnv(); 
-	
-    private volatile Heap heap = new Heap16Bit(); 
-    
-    
-    Value valueOf(Program p) throws ProgramError {
+
+	private volatile Heap heap = new Heap16Bit(); 
+
+
+	Value valueOf(Program p) throws ProgramError {
 		return (Value) p.accept(this, initEnv);
 	}
-	
+
 	@Override
 	public Value visit(AddExp e, Env<Value> env) throws ProgramError {
 		List<Exp> operands = e.all();
@@ -40,7 +40,7 @@ public class Evaluator implements Visitor<Value, Value> {
 		}
 		return new NumVal(result);
 	}
-	
+
 	@Override
 	public Value visit(UnitExp e, Env<Value> env) throws ProgramError {
 		return new UnitVal();
@@ -119,19 +119,19 @@ public class Evaluator implements Visitor<Value, Value> {
 		List<String> names = e.names();
 		List<Exp> value_exps = e.value_exps();
 		List<Value> values = new ArrayList<Value>(value_exps.size());
-		
+
 		for(Exp exp : value_exps){
 			Value value = (Value)exp.accept(this, env);
 			values.add(value);
 		}
-		
+
 		Env<Value> new_env = env;
 		for (int index = 0; index < names.size(); index++)
 			new_env = new ExtendEnv<>(new_env, names.get(index), values.get(index));
 
 		return (Value) e.body().accept(this, new_env);		
 	}	
-	
+
 	@Override
 	public Value visit(DefineDecl e, Env<Value> env) throws ProgramError { // New for definelang.
 		String name = e.name();
@@ -145,7 +145,7 @@ public class Evaluator implements Visitor<Value, Value> {
 	public Value visit(LambdaExp e, Env<Value> env) throws ProgramError {
 		return new Value.FunVal(env, e.formals(), e.body());
 	}
-	
+
 	@Override
 	public Value visit(CallExp e, Env<Value> env) throws ProgramError {
 		Object result = e.operator().accept(this, env);
@@ -158,9 +158,9 @@ public class Evaluator implements Visitor<Value, Value> {
 		List<Value> actuals = new ArrayList<Value>(operands.size());
 		for(Exp exp : operands) 
 			actuals.add((Value)exp.accept(this, env));
-		
+
 		List<String> formals = operator.formals();
-		
+
 		Env<Value> fun_env = operator.env();
 
 		if(operator.formals().contains("..."))
@@ -174,17 +174,17 @@ public class Evaluator implements Visitor<Value, Value> {
 
 		for (int index = 0; index < formals.size(); index++)
 			fun_env = new ExtendEnv<>(fun_env, formals.get(index), actuals.get(index));
-		
+
 		return (Value) operator.body().accept(this, fun_env);
 	}
-		
+
 	@Override
 	public Value visit(IfExp e, Env<Value> env) throws ProgramError { // New for funclang.
 		Object result = e.conditional().accept(this, env);
 		if(!(result instanceof Value.BoolVal))
 			throw new ProgramError("Condition not a boolean in expression " +  ts.visit(e, null));
 		Value.BoolVal condition =  (Value.BoolVal) result; //Dynamic checking
-		
+
 		if(condition.v())
 			return (Value) e.then_exp().accept(this, env);
 		else return (Value) e.else_exp().accept(this, env);
@@ -196,7 +196,7 @@ public class Evaluator implements Visitor<Value, Value> {
 		Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
 		return new Value.BoolVal(first.v() < second.v());
 	}
-	
+
 	@Override
 	public Value visit(EqualExp e, Env<Value> env) throws ProgramError { // New for funclang.
 		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
@@ -210,19 +210,19 @@ public class Evaluator implements Visitor<Value, Value> {
 		Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
 		return new Value.BoolVal(first.v() > second.v());
 	}
-	
+
 	@Override
 	public Value visit(CarExp e, Env<Value> env) throws ProgramError { 
 		Value.PairVal pair = (Value.PairVal) e.arg().accept(this, env);
 		return pair.fst();
 	}
-	
+
 	@Override
 	public Value visit(CdrExp e, Env<Value> env) throws ProgramError { 
 		Value.PairVal pair = (Value.PairVal) e.arg().accept(this, env);
 		return pair.snd();
 	}
-	
+
 	@Override
 	public Value visit(ConsExp e, Env<Value> env) throws ProgramError { 
 		Value first = (Value) e.fst().accept(this, env);
@@ -236,18 +236,18 @@ public class Evaluator implements Visitor<Value, Value> {
 		int length = elemExps.size();
 		if(length == 0)
 			return new Value.Null();
-		
+
 		//Order of evaluation: left to right e.g. (list (+ 3 4) (+ 5 4)) 
 		Value[] elems = new Value[length];
 		for(int i=0; i<length; i++)
 			elems[i] = (Value) elemExps.get(i).accept(this, env);
-		
+
 		Value result = new Value.Null();
 		for(int i=length-1; i>=0; i--) 
 			result = new PairVal(elems[i], result);
 		return result;
 	}
-	
+
 	@Override
 	public Value visit(NullExp e, Env<Value> env) throws ProgramError {
 		Value val = (Value) e.arg().accept(this, env);
@@ -319,20 +319,20 @@ public class Evaluator implements Visitor<Value, Value> {
 			throw new ProgramError(exception.getMessage());
 		}
 	}
-	
+
 	@Override
 	public Value visit(LetrecExp e, Env<Value> env) throws ProgramError { // New for reclang.
 		List<String> names = e.names();
 		List<Exp> fun_exps = e.fun_exps();
 		List<Value.FunVal> funs = new ArrayList<Value.FunVal>(fun_exps.size());
-		
+
 		for(Exp exp : fun_exps) 
 			funs.add((Value.FunVal)exp.accept(this, env));
 
 		Env<Value> new_env = new ExtendEnvRec(env, names, funs);
 		return (Value) e.body().accept(this, new_env);		
 	}	
-    
+
 	@Override
 	public Value visit(RefExp e, Env<Value> env) throws ProgramError { // New for reflang.
 		Exp value_exp = e.value_exp();
@@ -368,7 +368,7 @@ public class Evaluator implements Visitor<Value, Value> {
 
 	private Env<Value> initialEnv() {
 		GlobalEnv<Value> initEnv = new GlobalEnv<>();
-		
+
 		/* Procedure: (read <filename>). Following is same as (define read (lambda (file) (read file))) */
 		List<String> formals = new ArrayList<>();
 		formals.add("file");
@@ -382,12 +382,12 @@ public class Evaluator implements Visitor<Value, Value> {
 		body = new EvalExp(new AST.ReadExp(new VarExp("file")));
 		Value.FunVal requireFun = new Value.FunVal(initEnv, formals, body);
 		initEnv.extend("require", requireFun);
-		
+
 		/* Add new built-in procedures here */ 
-		
+
 		return initEnv;
 	}
-	
+
 	Reader _reader; 
 	public Evaluator(Reader reader) {
 		_reader = reader;
@@ -405,7 +405,7 @@ public class Evaluator implements Visitor<Value, Value> {
 			this.exp = exp;
 			this.evaluator = evaluator;
 		}
-		
+
 		public void run(){
 			try {
 				value = (Value) exp.accept(evaluator, env);
@@ -413,7 +413,7 @@ public class Evaluator implements Visitor<Value, Value> {
 				e.printStackTrace();
 			}
 		}
-		
+
 		public Value value() throws ProgramError {
 			try {
 				this.join();
@@ -423,7 +423,7 @@ public class Evaluator implements Visitor<Value, Value> {
 			return value;
 		}
 	}
-	
+
 	@Override
 	public Value visit(EventExp e, Env<Value> env) throws ProgramError {
 		return new Value.EventVal(e.contexts());
@@ -431,40 +431,40 @@ public class Evaluator implements Visitor<Value, Value> {
 
 	@Override
 	public Value visit(AnnounceExp e, Env<Value> env) throws ProgramError {
-        Exp event_exp = e.event();
-        Object result = event_exp.accept(this, env);
+		Exp event_exp = e.event();
+		Object result = event_exp.accept(this, env);
 		if(!(result instanceof Value.EventVal))
 			throw new ProgramError("Non-event value cannot be announced in expression " +  ts.visit(e, null));
-        Value.EventVal event = (Value.EventVal) result;
+		Value.EventVal event = (Value.EventVal) result;
 		if(!(e.actuals().size()== event.contexts().size()))
-			throw new ProgramError("Number of context varaibles do not match in announce expression " +  ts.visit(e, null));
-		
+			throw new ProgramError("Number of context variables do not match in announce expression " +  ts.visit(e, null));
+
 		List<String> contexts = event.contexts();	
 		List<Value> actuals = new ArrayList<Value>(contexts.size());
-		
 		for(Exp exp : e.actuals()) 
 			actuals.add((Value)exp.accept(this, env));
 
-		Env<Value> ann_env = this.initEnv;
-		for (int index = 0; index < actuals.size(); index++)
-			ann_env = new ExtendEnv<>(ann_env, contexts.get(index), actuals.get(index));
-
 		Value lastVal = new UnitVal();
-		for(Exp exp:event.handlers()){
-			lastVal = (Value)exp.accept(this, ann_env);
-        }
+		List<Exp> handlers = event.handlers();
+		List<Env<Value>> handler_envs = event.handler_envs();
+		for(int handler_index=0; handler_index < handlers.size(); handler_index++) {
+			Env<Value> handler_env = handler_envs.get(handler_index);
+			for (int index = 0; index < actuals.size(); index++)
+				handler_env = new ExtendEnv<>(handler_env, contexts.get(index), actuals.get(index));
+			lastVal = (Value) handlers.get(handler_index).accept(this, handler_env);
+		}
 		return lastVal;
 	}
 
 	@Override
 	public Value visit(WhenExp e, Env<Value> env) throws ProgramError {
-        Exp event_exp = e.event();
-        Object result = event_exp.accept(this, env);
+		Exp event_exp = e.event();
+		Object result = event_exp.accept(this, env);
 		if(!(result instanceof Value.EventVal))
 			throw new ProgramError("Non-event value cannot be used in when expression " +  ts.visit(e, null));
 		EventVal event = (EventVal) result;
 		Exp handler = e.body();
-		event.register(handler);
+		event.register(handler, env);
 		return new UnitVal();
 	}
 
@@ -477,16 +477,16 @@ public class Evaluator implements Visitor<Value, Value> {
 		new Printer().print((Value)result);
 		return new Value.UnitVal();
 	}
-	
+
 	@Override
 	public Value visit(SeqExp e, Env<Value> env) throws ProgramError {
 		List<Exp> expressions = e.expressions();
 
 		Value result = new Value.UnitVal();
-		
+
 		for(Exp exp : expressions) 
 			result = (Value) exp.accept(this, env);
-				
+
 		return result;
 	}
 
