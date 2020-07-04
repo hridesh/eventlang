@@ -29,7 +29,7 @@ public interface Value {
 			return result + ")";
 	    }
     }
-	static class RefVal extends ReentrantLock implements Value { //New in the reflang
+	static class RefVal extends ReentrantLock implements Value {
 		private static final long serialVersionUID = 1L;
 		private int _loc = -1; 
         public RefVal(int loc) { _loc = loc; }
@@ -119,10 +119,5 @@ public interface Value {
 	static class UnitVal implements Value {
 		public static final UnitVal v = new UnitVal();
 	    public String tostring() { return ""; }
-	}
-	static class DynamicError implements Value { 
-		private String message = "Unknown dynamic error.";
-		public DynamicError(String message) { this.message = message; }
-	    public String tostring() { return "" + message; }
 	}
 }
