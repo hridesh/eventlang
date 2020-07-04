@@ -303,7 +303,8 @@ public class Printer {
 		@Override
 		public String visit(PrintExp e, Env<Void> env) throws ProgramError {
             String result = "(print ";
-            result += e.value_exp().accept(this, env);
+			for(AST.Exp exp : e.expressions())
+				result += exp.accept(this, env) + " ";
             return result + ")";
 		}
 		
