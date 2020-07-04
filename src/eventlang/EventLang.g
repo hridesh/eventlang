@@ -72,10 +72,11 @@ whenexp returns [WhenExp ast] :
 		;	
  // End: New Expressions for EventLang       
 
- printexp returns [PrintExp ast] :
+ printexp returns [PrintExp ast]
+        locals [ArrayList<Exp> arguments = new ArrayList<Exp>();  ] :
         '(' Print
-            e1=exp
-        ')' { $ast = new PrintExp($e1.ast); }
+            ( e=exp { $arguments.add($e.ast); } )* 
+        ')' { $ast = new PrintExp($arguments); }
          ;
 
  seqexp returns [SeqExp ast] 
