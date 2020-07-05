@@ -475,7 +475,7 @@ public class Evaluator implements Visitor<Value, Value> {
 		for(Exp exp : expressions) 
 			result = new StringVal(result.v() + ((Value) exp.accept(this, env)).tostring());
 		new Printer().print((Value)result);
-		return new Value.UnitVal();
+		return result;
 	}
 
 	@Override
